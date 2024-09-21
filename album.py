@@ -20,3 +20,7 @@ for l in list:
     l.pack()
 
 root.mainloop()
+# img = Image.open("2.jpg")
+# img= img.resize((600,600))
+# im2 = ImageTk.PhotoImage(img)
+# frame.config(highlightbackground="#e0e0e0", highlightthickness=1)
