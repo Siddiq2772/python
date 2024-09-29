@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 import sys
+import database as db
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -223,6 +225,7 @@ class Ui_MainWindow(object):
             self.label_warning.setText("Passwords do not match.")
         else:
             self.label_warning.clear()
+            return email,confirm_password
 
     def onTextChanged(self):
         first_name = self.lineEdit_first_name.text()
@@ -232,28 +235,48 @@ class Ui_MainWindow(object):
             self.label_warning.setText("First name and last name cannot be empty.")
         else:
             self.label_warning.clear()
+            return first_name,last_name
+        
+        
+            
+        
 
     def onLoginChanged(self):
         login_email = self.lineEdit_login_Email.text()
+        password = self.lineEdit_login_password.text()
 
         if "@" not in login_email or ".com" not in login_email:
             self.label_warning_login.setText("Invalid email format. Please include '@' and '.com'.")
         else:
             self.label_warning_login.clear()
+            return login_email,password
 
     def onGenderSelected(self):
         if self.radioButton_male.isChecked():
-            print("Male selected")
+            return "Male"
         elif self.radioButton_female.isChecked():
-            print("Female selected")
+            return "Female"
         
     def signup(self):
-        # Perform sign-up logic
-        pass
+        email,confirm_password=self.onPasswordChanged()
+        first_name,last_name=self.onTextChanged()
+        gender=self.onGenderSelected()
+        
+        result=db.sign_up(email,confirm_password,first_name,last_name,gender)
+        
+        if result==0:
+            QMessageBox.information(self.centralwidget, "Success", "Signup successful!")
+        else:
+            QMessageBox.information(self.centralwidget, "Something Wrong", f"{result}")
 
     def login(self):
-        # Perform login logic
-        pass
+        login_email,password=self.onLoginChanged()
+        result=db.log_in(login_email,password)
+        
+        if result==0:
+            QMessageBox.information(self.centralwidget, "Success", "Log in successful!")
+        else:
+            QMessageBox.information(self.centralwidget, "Something Wrong", f"{result}")
 
     def gotoSignupPage(self, event):
         self.stackedWidget.setCurrentWidget(self.page_signup)
